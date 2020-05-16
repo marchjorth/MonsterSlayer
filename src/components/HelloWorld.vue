@@ -44,7 +44,13 @@
             <div class="status">
                 <ul class="status__messages">
                     <template v-for="message in messages">
-                        <li v-for="m in message" :key="m.id">{{ m }}</li>
+                        <div v-for="m in message" :key="m.id" class="status__message">
+                            <li
+                                v-for="m in message"
+                                :class="m.messageClass"
+                                :key="m.id"
+                            >{{ m.messageText }}</li>
+                        </div>
                     </template>
                 </ul>
             </div>
@@ -164,28 +170,41 @@ export default {
             if (String(type).toLowerCase() == "heal") {
                 this.messages.push(
                     {
-                        message:
-                            "You healed for " +
-                            userMessage +
-                            " hitpoints this round"
+                        message: {
+                            messageClass: "status__message--heal",
+                            messageText:
+                                "You healed for " +
+                                userMessage +
+                                " hitpoints this round"
+                        }
                     },
                     {
-                        message:
-                            "Monster did " +
-                            monsterMessage +
-                            " damage this round"
+                        message: {
+                            messageClass: "status__message--monster-damage",
+                            messageText:
+                                "Monster did " +
+                                monsterMessage +
+                                " damage this round"
+                        }
                     }
                 );
             } else {
                 this.messages.push(
                     {
-                        message: "You did " + userMessage + " damage this round"
+                        message: {
+                            messageClass: "status__message--user-damage",
+                            messageText:
+                                "You did " + userMessage + " damage this round"
+                        }
                     },
                     {
-                        message:
-                            "Monster did " +
-                            monsterMessage +
-                            " damage this round"
+                        message: {
+                            messageClass: "status__message--monster-damage",
+                            messageText:
+                                "Monster did " +
+                                monsterMessage +
+                                " damage this round"
+                        }
                     }
                 );
             }
@@ -357,22 +376,27 @@ li {
             padding: 4px 10px;
             margin: 5px 0;
             font-size: 14px;
+            color: white;
+            border: 1px solid #1c3867;
+        }
+    }
 
-            &:nth-child(odd) {
-                background-color: #466db3;
-                color: white;
-                border: 1px solid #1c3867;
-            }
+    &__message {
 
-            &:nth-child(even) {
-                background-color: #ff3a3a;
-                color: white;
-                border: 1px solid #7b0000;
-            }
+		&:nth-child(2n):not(:last-of-type) {
+			margin-top: 25px;
+		}
 
-            &:nth-child(2n):not(:last-of-type) {
-                margin-top: 30px;
-            }
+        &--user-damage {
+            background-color: #1c3867;
+        }
+
+        &--monster-damage {
+            background-color: #ff3a3a;
+        }
+
+        &--heal {
+            background-color: green;
         }
     }
 }
