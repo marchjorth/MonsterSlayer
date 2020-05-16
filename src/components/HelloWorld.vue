@@ -14,7 +14,6 @@
                 </div>
 
                 <div class="monster">
-                
                     <h3>Monster</h3>
                     <div class="healthbar">
                         <span>{{monster.health}}</span>
@@ -24,17 +23,17 @@
             </div>
 
             <div class="controls">
-                <button class="btn attack" @click="attack">Attack</button>
-                <button class="btn btn-special-attack" :disabled="extras.specialCooldown == true"
+                <button class="btn btn__attack" @click="attack">Attack</button>
+                <button class="btn btn__attack--special" :disabled="extras.specialCooldown == true"
                     @click="specialAttack">Special attack</button>
-                <button class="btn heal" @click="heal">Heal</button>
-                <button class="btn give-up" @click="surrenderConfirmation">{{ extras.surrenderText }}</button>
-                <button v-if="extras.surrender == true" class="btn give-up surrender" @click="surrender">Yes</button>
+                <button class="btn btn__heal" @click="heal">Heal</button>
+                <button class="btn btn__give-up" @click="surrenderConfirmation">{{ extras.surrenderText }}</button>
+                <button v-if="extras.surrender == true" class="btn btn__give-up btn__give-up--surrender" @click="surrender">Yes</button>
 
             </div>
 
             <div class="status">
-                <ul class="status-messages">
+                <ul class="status__messages">
                     <template v-for="message in messages">
                         <li v-for="m in message" :key="m.id">{{ m }}</li>
                     </template>
@@ -44,9 +43,9 @@
         </div>
 
         <section class="modal" id="modal">
-            <div class="modal-dialog">
+            <div class="modal__dialog">
                 <h2>{{ extras.result }}</h2>
-                <button @click="restart()" class="btn attack">{{ extras.endButtonText }}</button>
+                <button @click="restart()" class="btn btn__restart">{{ extras.endButtonText }}</button>
             </div>
         </section>
 
@@ -188,6 +187,7 @@ html, body {
     padding: 0;
     margin: 0;
 }
+
 body {
     background-color: #eeeeee;
 }
@@ -238,53 +238,64 @@ hr {
     font-weight: bold;
     font-size: 14px;
     transition: background-color .3s ease;
-}
 
-.controls .btn:hover {
-    cursor: pointer;
-    background-color: black;
-    color: white;
-}
+    &:hover {
+        cursor: pointer;
+        background-color: #000;
+        color: #FFF;
+    }
+    
+    &__attack {
+        border-color: #466db3;
 
-.btn.attack {
-    border-color: #466db3;
-}
+        &:hover {
+            background-color: #466db3;
+        }
 
-.btn.attack:hover {
-    background-color: #466db3;
-}
+        &--special {
+            border-color: red;
+            position: relative;
 
-.btn.btn-special-attack {
-    border-color: red;
-    position: relative;
-}
+            &:hover {
+                background-color: red;
+            }
 
-.btn.btn-special-attack:hover {
-    background-color: red;
-}
+            &[disabled] {
+                border-color: grey;
+                opacity: 0.5;
+                pointer-events: none;
 
-.btn.btn-special-attack[disabled] {
-    border-color: grey;
-    opacity: 0.5;
-    pointer-events: none;
-}
+                &:before {
+                    content: "cooldown..";
+                    display: block;
+                    position: absolute;
+                    top: 40px;
+                    font-size: 11px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+            }
+        }
+    }
 
-.btn.btn-special-attack[disabled]:before {
-    content: "cooldown..";
-    display: block;
-    position: absolute;
-    top: 40px;
-    font-size: 11px;
-    left: 50%;
-    transform: translateX(-50%);
-}
+    &__heal {
+        border-color: green;
 
-.btn.heal {
-    border-color: green;
-}
+        &:hover {
+            background-color: green;
+        }
+    }
 
-.btn.heal:hover {
-    background-color: green;
+    &__restart {
+        border-color: #FFF;
+        color: #FFF;
+        background-color: transparent;
+
+        &:hover {
+            background-color: #FFF;
+            color: #000;
+        }
+    }
 }
 
 li {
@@ -297,12 +308,12 @@ li {
     text-align: center;
     position: relative;
     height: 30px;
-}
 
-.healthbar span {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%)
+    span {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%)
+    }
 }
 
 .health {
@@ -312,33 +323,37 @@ li {
     transition: all 0.3s ease;
 }
 
-.status-messages {
-    display: flex;
-    flex-direction: column-reverse;
-    padding-left: 0;
+.status {
+    &__messages {
+        display: flex;
+        flex-direction: column-reverse;
+        padding-left: 0;
+
+
+        li {
+            padding: 4px 10px;
+            margin: 5px 0;
+            font-size: 14px;
+
+            &:nth-child(odd) {
+                background-color: #466db3;
+                color: white;
+                border: 1px solid #1c3867;
+            }
+
+            &:nth-child(even) {
+                background-color: #ff3a3a;
+                color: white;
+                border: 1px solid #7b0000;
+            }
+
+            &:nth-child(2n):not(:last-of-type) {
+                margin-top: 30px;
+            }
+        }
+    }
 }
 
-.status-messages li {
-    padding: 4px 10px;
-    margin: 5px 0;
-    font-size: 14px;
-}
-
-.status-messages li:nth-child(odd) {
-    background-color: #466db3;
-    color: white;
-    border: 1px solid #1c3867;
-}
-
-.status-messages li:nth-child(even) {
-    background-color: #ff3a3a;
-    color: white;
-    border: 1px solid #7b0000;
-}
-
-.status-messages li:nth-child(2n) {
-    margin-top: 15px;
-}
 
 .modal {
     position: fixed;
@@ -346,48 +361,33 @@ li {
     left:0;
     height:100%;
     width: 100%;
-}
-
-.modal {
     z-index:101;
     background-color: rgba(0, 0, 0, 0.9);
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.5s, visibility 0s 0.5s;
-}
 
-.modal.active {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.5s;
-}
+    &.active {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.5s;
 
-.modal.active h2 {
-    color: white;
-    font-size: 36px;
-}
+        h2 {
+            color: white;
+            font-size: 36px;
+        }
+    }
 
-.modal-dialog {
-    height: 100%;
-    flex-direction: column;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    &__dialog {
+        height: 100%;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-.modal-dialog .btn {
-    background-color: transparent;
-    color: white;
-    border-color: white;
-    position: relative;
-    z-index: 105;
-}
-
-.modal-dialog .btn:hover {
-    cursor: pointer;
-    background-color: white;
-    color: #111;
+        .btn {
+            z-index: 105;
+        }
+    }
 }
 </style>
-
-
