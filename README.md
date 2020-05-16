@@ -1,4 +1,4 @@
-# vue_monsterslayer
+# Monster Slayer
 
 ## Project setup
 ```
